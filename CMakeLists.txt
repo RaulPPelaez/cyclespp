@@ -33,3 +33,5 @@ add_subdirectory(src)
 enable_testing() # This line allows to call ctest after compilation
 add_subdirectory(tests)
 add_subdirectory(docs)
+add_executable(client client/client_randomio.cpp)
+add_executable(client1 client/client_jafar.cpp)
