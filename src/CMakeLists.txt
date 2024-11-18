@@ -14,3 +14,7 @@ link_libraries(api)
 
 add_executable(client client/client_randomio.cpp)
 add_subdirectory(server)
+add_executable(client_Karl_mouchantaf.cpp client_Karl_mouchantaf.cpp)
+target_link_libraries(client_Karl_mouchantaf PRIVATE cycles)
+
+
