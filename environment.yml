@@ -3,15 +3,15 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.11.*
+  - python=3.*
   - cmake
   - make
   - ninja
-  - clangxx
+  - c-compiler
+  - cxx-compiler
   - doxygen
   - spdlog==1.14.*
-  - sfml==2.6.*
-  - libudev  # [linux]
+  - sfml==2.*
   - pip 
   - pip:
     - breathe==4.35.0
