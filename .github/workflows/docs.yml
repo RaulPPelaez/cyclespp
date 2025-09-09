@@ -28,24 +28,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up micromamba (use environment.yml)
-        uses: mamba-org/setup-micromamba@v2
+      - name: Install Mamba
+        uses: conda-incubator/setup-miniconda@v3
         with:
           environment-file: environment.yml
-          cache-environment: true
+          cache-environment: false
           cache-downloads: true
           activate-environment: cycles
-
-      - name: Configure (CMake)
+          auto-activate-base: false
+          miniforge-version: latest
+          
+      - name: Configure and build
         run: |
+          # Fix sfml bug (Linux only)
+          ln -s $CONDA_PREFIX/lib/libudev.so.1 $CONDA_PREFIX/lib/libudev.so.0
           cmake -S . -B build -G Ninja
-        shell: micromamba-shell {0}
-
-      - name: Build
-        run: |
           cmake --build build
-        shell: micromamba-shell {0}
-
+  
       - name: Verify Sphinx output exists
         run: |
           test -f build/docs/sphinx/index.html || (echo "Sphinx index not found"; ls -la build/docs || true; exit 1)
