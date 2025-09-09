@@ -1,0 +1,71 @@
+
+name: Build & Publish Docs to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ '*' ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write         # required for actions/deploy-pages
+  id-token: write      # required for OIDC deploy
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up micromamba (use environment.yml)
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environment.yml
+          cache-environment: true
+          cache-downloads: true
+          activate-environment: cycles
+
+      - name: Configure (CMake)
+        run: |
+          cmake -S . -B build -G Ninja
+        shell: micromamba-shell {0}
+
+      - name: Build
+        run: |
+          cmake --build build
+        shell: micromamba-shell {0}
+
+      - name: Verify Sphinx output exists
+        run: |
+          test -f build/docs/sphinx/index.html || (echo "Sphinx index not found"; ls -la build/docs || true; exit 1)
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/docs/sphinx
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.event_name != 'pull_request'   # only publish on push/tag/workflow_dispatch, not PRs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
