@@ -49,6 +49,10 @@ jobs:
     
     - name: Configure and compile the library
       run: |
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          # Fix sfml bug (Linux only)
+          ln -s $CONDA_PREFIX/lib/libudev.so.1 $CONDA_PREFIX/lib/libudev.so.0
+        fi
         mkdir build && cd build
         cmake -DCMAKE_VERBOSE_MAKEFILE=yes -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -G Ninja ..
         cmake --build .

@@ -44,6 +44,8 @@ jobs:
                
       - name: Configure and build
         run: |
+          # Fix sfml bug (Linux only)
+          ln -s $CONDA_PREFIX/lib/libudev.so.1 $CONDA_PREFIX/lib/libudev.so.0
           cmake -S . -B build -G Ninja
           cmake --build build
   
