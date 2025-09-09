@@ -37,7 +37,11 @@ jobs:
           activate-environment: cycles
           auto-activate-base: false
           miniforge-version: latest
-          
+
+      - name: List environment
+        run: |
+          conda list
+               
       - name: Configure and build
         run: |
           # Fix sfml bug (Linux only)
