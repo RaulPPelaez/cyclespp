@@ -10,6 +10,7 @@ dependencies:
   - clangxx
   - doxygen
   - spdlog==1.14.*
+  - libudev  # [linux]
   - sfml==2.*
   - pip 
   - pip:
