@@ -7,8 +7,7 @@ dependencies:
   - cmake
   - make
   - ninja
-  - c-compiler
-  - cxx-compiler
+  - clangxx<19
   - doxygen
   - spdlog==1.14.*
   - sfml==2.*
